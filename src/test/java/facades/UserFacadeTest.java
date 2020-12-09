@@ -3,6 +3,8 @@ package facades;
 import dto.UserDTO;
 import entities.Role;
 import entities.User;
+import errorhandling.MissingInput;
+import errorhandling.NotFoundException;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
 
@@ -97,8 +99,9 @@ public class UserFacadeTest {
     }
 
     @Test
-    public void testAddUser() throws AuthenticationException {
+    public void testAddUser() throws AuthenticationException,  MissingInput {
         User newUser = new User("Test", "Testtest");
+
         UserDTO userDTO = facade.addUser(new UserDTO(newUser));
 
         List<UserDTO> userDTOList = facade.getAllUsers();

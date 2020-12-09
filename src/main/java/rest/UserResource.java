@@ -3,6 +3,8 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.UserDTO;
+import errorhandling.MissingInput;
+import errorhandling.NotFoundException;
 import facades.UserFacade;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
@@ -33,7 +35,7 @@ public class UserResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addUser(String user) throws  AuthenticationException {
+    public String addUser(String user) throws AuthenticationException, MissingInput {
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
         UserDTO newUser = USER_FACADE.addUser(userDTO);
         return GSON.toJson(newUser);

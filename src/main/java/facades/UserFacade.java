@@ -7,6 +7,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import errorhandling.MissingInput;
+import errorhandling.NotFoundException;
 import security.errorhandling.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +84,16 @@ public class UserFacade {
 
     }
 
-    public UserDTO addUser (UserDTO userDTO) throws  AuthenticationException {
+    public UserDTO addUser (UserDTO userDTO) throws AuthenticationException, MissingInput {
 
         EntityManager em = emf.createEntityManager();
+
         User user = new User(userDTO.getUsername(), userDTO.getPassword());
+
+        if(user.getUsername().length() < 2 ){
+            throw new MissingInput("Username should be atleast 2 characters long");
+        }
+
         addInitialRoles(em);
         checkRole(user, em);
         checkIfExists(user, em);
