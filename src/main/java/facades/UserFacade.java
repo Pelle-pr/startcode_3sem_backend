@@ -88,12 +88,15 @@ public class UserFacade {
 
         EntityManager em = emf.createEntityManager();
 
-        User user = new User(userDTO.getUsername(), userDTO.getPassword());
 
-        if(user.getUsername().length() < 2 ){
-            throw new MissingInput("Username should be atleast 2 characters long");
+
+        if(userDTO.getPassword().length() < 4){
+            throw new AuthenticationException("Your password has to be 4 characters or more!");
         }
-
+        if(userDTO.getUsername().length() < 2){
+            throw new AuthenticationException("Your username has to be 2 characters or more!");
+        }
+        User user = new User(userDTO.getUsername(), userDTO.getPassword());
         addInitialRoles(em);
         checkRole(user, em);
         checkIfExists(user, em);
@@ -130,7 +133,7 @@ public class UserFacade {
         query.setParameter("role", param);
         user.addRole((Role) query.getSingleResult());
     }
-    
+
     public void addInitialRoles(EntityManager em) {
         Query query = em.createQuery("SELECT r FROM Role r");
         if (query.getResultList().isEmpty()) {
@@ -140,5 +143,5 @@ public class UserFacade {
             em.getTransaction().commit();
         }
     }
-    
+
 }

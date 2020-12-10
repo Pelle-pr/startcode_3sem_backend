@@ -1,5 +1,7 @@
 package rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dto.UserDTO;
 import entities.Role;
 import entities.User;
@@ -35,6 +37,7 @@ public class UserResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static User user, admin, both;
+    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
@@ -149,12 +152,12 @@ public class UserResourceTest {
 
     @Test
     public void testAddUser(){
-        User newUser = new User("test", "test");
-        UserDTO newUserDTO = new UserDTO(newUser);
+        String user = "{\"username\":\"test\",\"password\":\"TestTest\"}";
+        UserDTO userDTO = gson.fromJson(user, UserDTO.class);
 
         given()
                 .contentType("application/json")
-                .body(newUserDTO)
+                .body(userDTO)
                 .when()
                 .post("/users/")
                 .then()

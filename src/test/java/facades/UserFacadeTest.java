@@ -1,5 +1,7 @@
 package facades;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dto.UserDTO;
 import entities.Role;
 import entities.User;
@@ -22,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Locale;
 
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
@@ -30,7 +33,7 @@ public class UserFacadeTest {
     private static EntityManagerFactory emf;
     private static UserFacade facade;
     private static User user, admin, both;
-
+    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public UserFacadeTest() {
     }
@@ -99,17 +102,17 @@ public class UserFacadeTest {
     }
 
     @Test
-    public void testAddUser() throws AuthenticationException,  MissingInput {
-        User newUser = new User("Test", "Testtest");
+    public void testAddUser() throws AuthenticationException, MissingInput {
 
-        UserDTO userDTO = facade.addUser(new UserDTO(newUser));
+        String user = "{\"username\":\"Test\",\"password\":\"TestTest\"}";
+        UserDTO userDTO = gson.fromJson(user, UserDTO.class);
+        UserDTO newUser = facade.addUser(userDTO);
 
         List<UserDTO> userDTOList = facade.getAllUsers();
 
         assertTrue(userDTOList.size() == 4);
 
-        assertTrue(userDTO.getUsername().equals(newUser.getUsername()));
-
+        assertTrue(newUser.getUsername().equalsIgnoreCase(userDTO.getUsername()));
     }
 
 }
